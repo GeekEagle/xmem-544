@@ -26,18 +26,10 @@ class ImagePlayerApp:
         # self.mask_files = sorted(os.listdir(self.mask_folder))
         self.current_index = 0
         self.setup_gui()
-        # self.num_objects = config['num_objects']
-        # self.processor = InferenceCore(model,config)
-        # self.processor.set_all_labels(list(range(1, self.num_objects + 1)))
-        # self.fbrs_controller = fbrs
-        # self.device = device
-
-        # self.fbrs.toggled.connect(self.interaction_radio_clicked)
 
     def setup_gui(self,):
         self.canvas = tk.Canvas(self.master)
         self.canvas.grid(row=0, column=0, pady=20, sticky='w')
-        # self.canvas.pack()
 
         self.imageLabel = tk.Label(self.master, text="Enter video name with format (e.g., blackswan): ")
         self.selected_option = tk.StringVar(self.master)
@@ -59,7 +51,7 @@ class ImagePlayerApp:
         self.stop_button = tk.Button(self.master, text="Stop", command=self.stop_video)
         self.stop_button.grid(row=4, column=0, pady=10, sticky='w')
 
-        self.canvas.bind("<Button-1>", self.mouse_click)
+        # self.canvas.bind("<Button-1>", self.mouse_click)
         self.photo = None  # 保存PhotoImage对象的引用
         self.playing = False
 
@@ -125,25 +117,6 @@ class ImagePlayerApp:
         )
         return out_of_bound
 
-    def mouse_click(self,event):
-        if self.is_pos_out_of_bound(event.position().x(), event.position().y()):
-            return
-
-        h, w = self.image_height, self.image_width
-        self.load_current_torch_image_mask()
-        image = self.current_image_torch
-
-        last_interaction = self.interaction
-        new_interaction = None
-
-        if (last_interaction is None or type(last_interaction) != ClickInteraction
-                or last_interaction.tar_obj != self.current_object):
-            self.complete_interaction()
-            self.fbrs_controller.unanchor()
-            new_interaction = ClickInteraction(image, self.current_prob, (h, w),
-                                               self.fbrs_controller, self.current_object)
-        print("Mouse clicked at", event.x, event.y)
-
 
     def selected_video(self):
         video_name = self.selected_option.get().strip()
@@ -188,35 +161,35 @@ class ImagePlayerApp:
     def stop_video(self):
         self.playing = False
 
-def parameter():
-    # Arguments parsing
-    parser = ArgumentParser()
-    parser.add_argument('--model', default='./saves/xmem_0126_110000.pth')
-    # parser.add_argument('--s2m_model', default='saves/s2m.pth')
-    parser.add_argument('--fbrs_model', default='saves/fbrs.pth')
-
-    parser.add_argument('--buffer_size', help='Correlate with CPU memory consumption', type=int, default=10)
-
-    parser.add_argument('--num_objects', type=int, default=1)
-
-    # Long-memory options
-    # Defaults. Some can be changed in the GUI.
-    parser.add_argument('--max_mid_term_frames', help='T_max in paper, decrease to save memory', type=int, default=10)
-    parser.add_argument('--min_mid_term_frames', help='T_min in paper, decrease to save memory', type=int, default=5)
-    parser.add_argument('--max_long_term_elements',
-                        help='LT_max in paper, increase if objects disappear for a long time',
-                        type=int, default=10000)
-    parser.add_argument('--num_prototypes', help='P in paper', type=int, default=128)
-
-    parser.add_argument('--top_k', type=int, default=30)
-    parser.add_argument('--mem_every', type=int, default=10)
-    parser.add_argument('--deep_update_every', help='Leave -1 normally to synchronize with mem_every', type=int,
-                        default=-1)
-    parser.add_argument('--no_amp', help='Turn off AMP', action='store_true')
-    parser.add_argument('--size', default=480, type=int,
-                        help='Resize the shorter side to this size. -1 to use original resolution. ')
-    args = parser.parse_args()
-    return args
+# def parameter():
+#     # Arguments parsing
+#     parser = ArgumentParser()
+#     parser.add_argument('--model', default='./saves/xmem_0126_110000.pth')
+#     # parser.add_argument('--s2m_model', default='saves/s2m.pth')
+#     parser.add_argument('--fbrs_model', default='saves/fbrs.pth')
+#
+#     parser.add_argument('--buffer_size', help='Correlate with CPU memory consumption', type=int, default=10)
+#
+#     parser.add_argument('--num_objects', type=int, default=1)
+#
+#     # Long-memory options
+#     # Defaults. Some can be changed in the GUI.
+#     parser.add_argument('--max_mid_term_frames', help='T_max in paper, decrease to save memory', type=int, default=10)
+#     parser.add_argument('--min_mid_term_frames', help='T_min in paper, decrease to save memory', type=int, default=5)
+#     parser.add_argument('--max_long_term_elements',
+#                         help='LT_max in paper, increase if objects disappear for a long time',
+#                         type=int, default=10000)
+#     parser.add_argument('--num_prototypes', help='P in paper', type=int, default=128)
+#
+#     parser.add_argument('--top_k', type=int, default=30)
+#     parser.add_argument('--mem_every', type=int, default=10)
+#     parser.add_argument('--deep_update_every', help='Leave -1 normally to synchronize with mem_every', type=int,
+#                         default=-1)
+#     parser.add_argument('--no_amp', help='Turn off AMP', action='store_true')
+#     parser.add_argument('--size', default=480, type=int,
+#                         help='Resize the shorter side to this size. -1 to use original resolution. ')
+#     args = parser.parse_args()
+#     return args
 
 if __name__ == "__main__":
     # if torch.cuda.is_available():
